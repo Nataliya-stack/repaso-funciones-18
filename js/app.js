@@ -22,27 +22,28 @@ const separarParesEImpares = (arrayNumeros) => {
 
 btnSeparar.addEventListener("click", () => {
     const valorInput = inputParesImpares.value;
+    let textoHTML = ""; 
 
     if (valorInput.trim() === "") {
-        resultadoParesImpares.textContent = "Por favor, ingrese números.";
-        return;
+        textoHTML = "Por favor, ingrese números.";
+    } else {
+        const arrayOriginal = valorInput.split(/[\s,]+/).filter(Boolean).map(Number);
+
+        if (arrayOriginal.some(isNaN)) {
+            textoHTML = "Error: utilice solo números.";
+        } else {
+            const objetoResultado = separarParesEImpares(arrayOriginal);
+            const textoPares = objetoResultado.pares.join(", ");
+            const textoImpares = objetoResultado.impares.join(", ");
+
+            textoHTML = `
+                <strong>Pares:</strong> ${textoPares || "Ninguno"} <br>
+                <strong>Impares:</strong> ${textoImpares || "Ninguno"}
+            `;
+        }
     }
 
-    const arrayOriginal = valorInput.split(/[\s,]+/).filter(Boolean).map(Number);
-
-    if (arrayOriginal.some(isNaN)) {
-        resultadoParesImpares.textContent = "Error: utilice solo números.";
-        return;
-    }
-
-    const objetoResultado = separarParesEImpares(arrayOriginal);
-    const textoPares = objetoResultado.pares.join(", ");
-    const textoImpares = objetoResultado.impares.join(", ");
-
-    resultadoParesImpares.innerHTML = `
-        <strong>Pares:</strong> ${textoPares || "Ninguno"} <br>
-        <strong>Impares:</strong> ${textoImpares || "Ninguno"}
-    `;
+    resultadoParesImpares.innerHTML = textoHTML;
 
     inputParesImpares.value = "";
     inputParesImpares.focus();
